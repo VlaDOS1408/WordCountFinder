@@ -9,20 +9,20 @@ namespace WordCountFinder
 
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             SplitContainer generalSplitContainer;
+            Panel simbolsCountPartLabel;
+            Panel wordCountsPartPannel;
             _wordsInputBox = new RichTextBox();
+            _btnClearText = new Button();
             _btnCalculate = new Button();
             _inputTextOutputInfoGroupBox = new GroupBox();
-            simbolsCountPartLabel = new Panel();
             _simbolsCountValue = new Label();
             _simbolsCountLabel = new Label();
-            wordCountsPartPannel = new Panel();
             _wordsCountValue = new Label();
             _wordsCountLabel = new Label();
-            SettingsMenuStrip = new ContextMenuStrip(components);
-            _toolStripWorkMode = new ToolStripComboBox();
             generalSplitContainer = new SplitContainer();
+            simbolsCountPartLabel = new Panel();
+            wordCountsPartPannel = new Panel();
             ((System.ComponentModel.ISupportInitialize)generalSplitContainer).BeginInit();
             generalSplitContainer.Panel1.SuspendLayout();
             generalSplitContainer.Panel2.SuspendLayout();
@@ -30,7 +30,6 @@ namespace WordCountFinder
             _inputTextOutputInfoGroupBox.SuspendLayout();
             simbolsCountPartLabel.SuspendLayout();
             wordCountsPartPannel.SuspendLayout();
-            SettingsMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // generalSplitContainer
@@ -46,6 +45,7 @@ namespace WordCountFinder
             // 
             // generalSplitContainer.Panel2
             // 
+            generalSplitContainer.Panel2.Controls.Add(_btnClearText);
             generalSplitContainer.Panel2.Controls.Add(_btnCalculate);
             generalSplitContainer.Panel2.Controls.Add(_inputTextOutputInfoGroupBox);
             generalSplitContainer.Panel2.Margin = new Padding(10);
@@ -63,10 +63,23 @@ namespace WordCountFinder
             _wordsInputBox.Text = "";
             _wordsInputBox.TextChanged += _wordsInputBox_TextChanged;
             // 
+            // _btnClearText
+            // 
+            _btnClearText.Dock = DockStyle.Bottom;
+            _btnClearText.Enabled = false;
+            _btnClearText.Location = new Point(0, 209);
+            _btnClearText.Name = "_btnClearText";
+            _btnClearText.Size = new Size(185, 29);
+            _btnClearText.TabIndex = 2;
+            _btnClearText.Text = "Clear";
+            _btnClearText.UseVisualStyleBackColor = true;
+            _btnClearText.Click += _btnClearText_Click;
+            // 
             // _btnCalculate
             // 
             _btnCalculate.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             _btnCalculate.Dock = DockStyle.Bottom;
+            _btnCalculate.Enabled = false;
             _btnCalculate.Location = new Point(0, 238);
             _btnCalculate.Name = "_btnCalculate";
             _btnCalculate.Size = new Size(185, 29);
@@ -156,19 +169,6 @@ namespace WordCountFinder
             _wordsCountLabel.TabIndex = 0;
             _wordsCountLabel.Text = "Words count:";
             // 
-            // SettingsMenuStrip
-            // 
-            SettingsMenuStrip.ImageScalingSize = new Size(20, 20);
-            SettingsMenuStrip.Items.AddRange(new ToolStripItem[] { _toolStripWorkMode });
-            SettingsMenuStrip.Name = "contextMenuStrip1";
-            SettingsMenuStrip.Size = new Size(271, 64);
-            // 
-            // _toolStripWorkMode
-            // 
-            _toolStripWorkMode.Items.AddRange(new object[] { "Write & calculate", "Realtime calculate" });
-            _toolStripWorkMode.Name = "_toolStripWorkMode";
-            _toolStripWorkMode.Size = new Size(210, 28);
-            // 
             // WordCountFinder
             // 
             ClientSize = new Size(488, 283);
@@ -188,40 +188,64 @@ namespace WordCountFinder
             simbolsCountPartLabel.PerformLayout();
             wordCountsPartPannel.ResumeLayout(false);
             wordCountsPartPannel.PerformLayout();
-            SettingsMenuStrip.ResumeLayout(false);
             ResumeLayout(false);
         }
 
-        private void WordCountFinder_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private SplitContainer generalSplitContainer;
         private RichTextBox _wordsInputBox;
         private GroupBox _inputTextOutputInfoGroupBox;
         private Button _btnCalculate;
-        private Panel wordCountsPartPannel;
         private Label _wordsCountLabel;
         private Label _simbolsCountLabel;
-        private Panel simbolsCountPartLabel;
         private Label _wordsCountValue;
         private Label _simbolsCountValue;
+        private Button _btnClearText;
+
+        bool realtimeMode = false;
+
+        private void WordCountFinder_Load(object sender, EventArgs e)
+        {
+            if (realtimeMode)
+            {
+                RealtimeModeInit();
+            }
+        }
+
+        private void _btnClearText_Click(object sender, EventArgs e)
+        {
+            _wordsInputBox.Clear();
+        }
 
         private void _btnCalculate_Click(object sender, EventArgs e)
         {
+            if (realtimeMode)
+            {
+                return;
+            }
+
             _inputTextOutputInfoGroupBox.Enabled = true;
 
             CalculateValues();
+
+            _btnCalculate.Enabled = false;
         }
 
         private void _wordsInputBox_TextChanged(object sender, EventArgs e)
         {
+            Func<bool> textStatus = () => _wordsInputBox.TextLength > 0;
+            _btnClearText.Enabled = textStatus();
+
+            if (realtimeMode)
+            {
+                _inputTextOutputInfoGroupBox.Enabled = _wordsInputBox.TextLength > 0;
+
+                CalculateValues();
+
+                return;
+            }
+
+            _btnCalculate.Enabled = textStatus();
+
             _inputTextOutputInfoGroupBox.Enabled = false;
-
-            //_inputTextOutputInfoGroupBox.Enabled = _wordsInputBox.TextLength > 0;
-
-            //CalculateValues();
         }
 
         private void CalculateValues()
@@ -230,8 +254,9 @@ namespace WordCountFinder
             _simbolsCountValue.Text = _wordsInputBox.Text.Trim().Length.ToString();
         }
 
-        private ContextMenuStrip SettingsMenuStrip;
-        private System.ComponentModel.IContainer components;
-        private ToolStripComboBox _toolStripWorkMode;
+        private void RealtimeModeInit()
+        {
+            _btnCalculate.Enabled = false;
+        }
     }
 }
