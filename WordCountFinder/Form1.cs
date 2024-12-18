@@ -9,20 +9,26 @@ namespace WordCountFinder
 
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             SplitContainer generalSplitContainer;
+            Panel simbolsCountPartLabel;
+            Panel wordCountsPartPannel;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WordCountFinder));
             _wordsInputBox = new RichTextBox();
             _btnCalculate = new Button();
             _inputTextOutputInfoGroupBox = new GroupBox();
-            simbolsCountPartLabel = new Panel();
             _simbolsCountValue = new Label();
             _simbolsCountLabel = new Label();
-            wordCountsPartPannel = new Panel();
             _wordsCountValue = new Label();
             _wordsCountLabel = new Label();
-            SettingsMenuStrip = new ContextMenuStrip(components);
-            _toolStripWorkMode = new ToolStripComboBox();
+            SettingsMenuStrip = new ContextMenuStrip();
+            toolStripButton1 = new ToolStripDropDownButton();
+            grgToolStripMenuItem = new ToolStripMenuItem();
+            panel1 = new Panel();
+            writeAndCompileToolStripMenuItem = new ToolStripMenuItem();
+            realtimeCalculateToolStripMenuItem = new ToolStripMenuItem();
             generalSplitContainer = new SplitContainer();
+            simbolsCountPartLabel = new Panel();
+            wordCountsPartPannel = new Panel();
             ((System.ComponentModel.ISupportInitialize)generalSplitContainer).BeginInit();
             generalSplitContainer.Panel1.SuspendLayout();
             generalSplitContainer.Panel2.SuspendLayout();
@@ -31,6 +37,7 @@ namespace WordCountFinder
             simbolsCountPartLabel.SuspendLayout();
             wordCountsPartPannel.SuspendLayout();
             SettingsMenuStrip.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // generalSplitContainer
@@ -49,7 +56,7 @@ namespace WordCountFinder
             generalSplitContainer.Panel2.Controls.Add(_btnCalculate);
             generalSplitContainer.Panel2.Controls.Add(_inputTextOutputInfoGroupBox);
             generalSplitContainer.Panel2.Margin = new Padding(10);
-            generalSplitContainer.Size = new Size(472, 267);
+            generalSplitContainer.Size = new Size(472, 351);
             generalSplitContainer.SplitterDistance = 283;
             generalSplitContainer.TabIndex = 2;
             // 
@@ -58,7 +65,7 @@ namespace WordCountFinder
             _wordsInputBox.Dock = DockStyle.Fill;
             _wordsInputBox.Location = new Point(0, 0);
             _wordsInputBox.Name = "_wordsInputBox";
-            _wordsInputBox.Size = new Size(283, 267);
+            _wordsInputBox.Size = new Size(283, 351);
             _wordsInputBox.TabIndex = 0;
             _wordsInputBox.Text = "";
             _wordsInputBox.TextChanged += _wordsInputBox_TextChanged;
@@ -67,7 +74,7 @@ namespace WordCountFinder
             // 
             _btnCalculate.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             _btnCalculate.Dock = DockStyle.Bottom;
-            _btnCalculate.Location = new Point(0, 238);
+            _btnCalculate.Location = new Point(0, 322);
             _btnCalculate.Name = "_btnCalculate";
             _btnCalculate.Size = new Size(185, 29);
             _btnCalculate.TabIndex = 1;
@@ -159,22 +166,62 @@ namespace WordCountFinder
             // SettingsMenuStrip
             // 
             SettingsMenuStrip.ImageScalingSize = new Size(20, 20);
-            SettingsMenuStrip.Items.AddRange(new ToolStripItem[] { _toolStripWorkMode });
-            SettingsMenuStrip.Name = "contextMenuStrip1";
-            SettingsMenuStrip.Size = new Size(271, 64);
+            SettingsMenuStrip.Items.AddRange(new ToolStripItem[] { toolStripButton1 });
+            SettingsMenuStrip.Location = new Point(0, 0);
+            SettingsMenuStrip.Name = "SettingsMenuStrip";
+            SettingsMenuStrip.Size = new Size(488, 27);
+            SettingsMenuStrip.TabIndex = 3;
+            SettingsMenuStrip.Text = "Settings";
             // 
-            // _toolStripWorkMode
+            // toolStripButton1
             // 
-            _toolStripWorkMode.Items.AddRange(new object[] { "Write & calculate", "Realtime calculate" });
-            _toolStripWorkMode.Name = "_toolStripWorkMode";
-            _toolStripWorkMode.Size = new Size(210, 28);
+            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButton1.DropDownItems.AddRange(new ToolStripItem[] { grgToolStripMenuItem });
+            toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
+            toolStripButton1.ImageTransparentColor = Color.Magenta;
+            toolStripButton1.Name = "toolStripButton1";
+            toolStripButton1.Size = new Size(76, 24);
+            toolStripButton1.Text = "Settings";
+            // 
+            // grgToolStripMenuItem
+            // 
+            grgToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { writeAndCompileToolStripMenuItem, realtimeCalculateToolStripMenuItem });
+            grgToolStripMenuItem.Name = "grgToolStripMenuItem";
+            grgToolStripMenuItem.Size = new Size(224, 26);
+            grgToolStripMenuItem.Text = "Work mode";
+            // 
+            // panel1
+            // 
+            panel1.AutoSize = true;
+            panel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            panel1.Controls.Add(generalSplitContainer);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 27);
+            panel1.Name = "panel1";
+            panel1.Padding = new Padding(8);
+            panel1.Size = new Size(488, 367);
+            panel1.TabIndex = 4;
+            // 
+            // writeAndCompileToolStripMenuItem
+            // 
+            writeAndCompileToolStripMenuItem.Checked = true;
+            writeAndCompileToolStripMenuItem.CheckState = CheckState.Checked;
+            writeAndCompileToolStripMenuItem.Name = "writeAndCompileToolStripMenuItem";
+            writeAndCompileToolStripMenuItem.Size = new Size(224, 26);
+            writeAndCompileToolStripMenuItem.Text = "Write and calculate";
+            // 
+            // realtimeCalculateToolStripMenuItem
+            // 
+            realtimeCalculateToolStripMenuItem.Name = "realtimeCalculateToolStripMenuItem";
+            realtimeCalculateToolStripMenuItem.Size = new Size(224, 26);
+            realtimeCalculateToolStripMenuItem.Text = "Realtime calculate";
             // 
             // WordCountFinder
             // 
-            ClientSize = new Size(488, 283);
-            Controls.Add(generalSplitContainer);
+            ClientSize = new Size(488, 394);
+            Controls.Add(panel1);
+            Controls.Add(SettingsMenuStrip);
             Name = "WordCountFinder";
-            Padding = new Padding(8);
             Text = "Words Count Finder";
             Load += WordCountFinder_Load;
             generalSplitContainer.Panel1.ResumeLayout(false);
@@ -189,24 +236,27 @@ namespace WordCountFinder
             wordCountsPartPannel.ResumeLayout(false);
             wordCountsPartPannel.PerformLayout();
             SettingsMenuStrip.ResumeLayout(false);
+            SettingsMenuStrip.PerformLayout();
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
+
+        private RichTextBox _wordsInputBox;
+        private GroupBox _inputTextOutputInfoGroupBox;
+        private Button _btnCalculate;
+        private Label _wordsCountLabel;
+        private Label _simbolsCountLabel;
+        private Label _wordsCountValue;
+        private Label _simbolsCountValue;
+        private ContextMenuStrip SettingsMenuStrip;
+        private System.ComponentModel.IContainer components;
+        private ToolStripComboBox _settingsWorkModeComboBox;
 
         private void WordCountFinder_Load(object sender, EventArgs e)
         {
 
         }
-
-        private SplitContainer generalSplitContainer;
-        private RichTextBox _wordsInputBox;
-        private GroupBox _inputTextOutputInfoGroupBox;
-        private Button _btnCalculate;
-        private Panel wordCountsPartPannel;
-        private Label _wordsCountLabel;
-        private Label _simbolsCountLabel;
-        private Panel simbolsCountPartLabel;
-        private Label _wordsCountValue;
-        private Label _simbolsCountValue;
 
         private void _btnCalculate_Click(object sender, EventArgs e)
         {
@@ -230,8 +280,10 @@ namespace WordCountFinder
             _simbolsCountValue.Text = _wordsInputBox.Text.Trim().Length.ToString();
         }
 
-        private ContextMenuStrip SettingsMenuStrip;
-        private System.ComponentModel.IContainer components;
-        private ToolStripComboBox _toolStripWorkMode;
+        private ToolStripDropDownButton toolStripButton1;
+        private ToolStripMenuItem grgToolStripMenuItem;
+        private Panel panel1;
+        private ToolStripMenuItem writeAndCompileToolStripMenuItem;
+        private ToolStripMenuItem realtimeCalculateToolStripMenuItem;
     }
 }
