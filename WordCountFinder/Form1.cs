@@ -286,6 +286,8 @@
         private ToolStripMenuItem _menuStripLoadFileBtn;
         private ToolStripDropDownButton _menuStripSettingsCategory;
         private ToolStripComboBox _menuStripWorkModeComboBox;
+        private OpenFileDialog _openFileDialog;
+        private ToolStripMenuItem realtimeModeToolStripMenuItem;
 
         //TODO: REWORK IT!!!
         //мм, хуета ↓
@@ -348,6 +350,27 @@
             _inputTextOutputInfoGroupBox.Enabled = false;
         }
 
+        private void _menuStripLoadFileBtn_Click(object sender, EventArgs e)
+        {
+            _openFileDialog.ShowDialog();
+        }
+
+        private void _openFileDialog_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _wordsInputBox.Text = ReadFile(_openFileDialog.OpenFile());
+        }
+
+        private void realtimeModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            realtimeMode = !realtimeMode;
+
+            if (realtimeMode)
+            {
+                CalculateValues();
+                RealtimeModeInit();
+            }
+        }
+
         private void CalculateValues()
         {
             _wordsCountValue.Text = _wordsInputBox.Text.Split(' ').Length.ToString();
@@ -362,44 +385,19 @@
 
         private string ReadFile(Stream stream)
         {
-            return "";
-        }
-
-        private ToolStripMenuItem realtimeModeToolStripMenuItem;
-
-        private void _menuStripLoadFileBtn_Click(object sender, EventArgs e)
-        {
-            _openFileDialog.ShowDialog();
-        }
-
-        private OpenFileDialog _openFileDialog;
-
-        private void _openFileDialog_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            var stream = _openFileDialog.OpenFile();
-
             try
             {
                 using (StreamReader reader = new(stream))
                 {
-                    _wordsInputBox.Text = reader.ReadToEnd();
+                    return reader.ReadToEnd();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
 
-        private void realtimeModeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            realtimeMode = !realtimeMode;
-
-            if (realtimeMode)
-            {
-                CalculateValues();
-                RealtimeModeInit();
-            }
+            return default;
         }
     }
 }
