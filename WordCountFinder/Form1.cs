@@ -1,10 +1,15 @@
-﻿namespace WordCountFinder
+﻿using WordCountFinder.Settings;
+
+namespace WordCountFinder
 {
     public partial class WordCountFinder : Form
     {
         public WordCountFinder()
         {
             InitializeComponent();
+
+            _textWrited = () => _wordsInputBox.TextLength > 0;
+            _calculateMode = () => Config.WorkMode.Value;
         }
 
         private void InitializeComponent()
@@ -13,7 +18,6 @@
             Panel _4_simbolsCountPartLabel;
             Panel _4_wordCountsPartPannel;
             Panel _1_generalPanel;
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WordCountFinder));
             _wordsInputBox = new RichTextBox();
             _btnClearText = new Button();
             _btnCalculate = new Button();
@@ -207,7 +211,6 @@
             // 
             _menuStripFileCategory.DisplayStyle = ToolStripItemDisplayStyle.Text;
             _menuStripFileCategory.DropDownItems.AddRange(new ToolStripItem[] { _menuStripLoadFileBtn });
-            _menuStripFileCategory.Image = (Image)resources.GetObject("_menuStripFileCategory.Image");
             _menuStripFileCategory.ImageTransparentColor = Color.Magenta;
             _menuStripFileCategory.Name = "_menuStripFileCategory";
             _menuStripFileCategory.Size = new Size(46, 24);
@@ -239,7 +242,7 @@
             // 
             realtimeModeToolStripMenuItem.CheckOnClick = true;
             realtimeModeToolStripMenuItem.Name = "realtimeModeToolStripMenuItem";
-            realtimeModeToolStripMenuItem.Size = new Size(224, 26);
+            realtimeModeToolStripMenuItem.Size = new Size(195, 26);
             realtimeModeToolStripMenuItem.Text = "Realtime mode";
             realtimeModeToolStripMenuItem.Click += realtimeModeToolStripMenuItem_Click;
             // 
@@ -254,7 +257,6 @@
             Controls.Add(_1_generalPanel);
             Name = "WordCountFinder";
             Text = "Words Count Finder";
-            Load += WordCountFinder_Load;
             _2_generalSplitContainer.Panel1.ResumeLayout(false);
             _2_generalSplitContainer.Panel2.ResumeLayout(false);
             _2_generalSplitContainer.Panel2.PerformLayout();
@@ -289,29 +291,9 @@
         private OpenFileDialog _openFileDialog;
         private ToolStripMenuItem realtimeModeToolStripMenuItem;
 
-        //TODO: REWORK IT!!!
-        //мм, хуета ↓
-        bool realtimeMode = false;
-        Func<bool> textWrited = () => false;
+        private Func<bool> _textWrited = () => false;
+        private Func<CalculateMode> _calculateMode = () => CalculateMode.WriteAndCalculate;
 
-        private void WordCountFinder_Load(object sender, EventArgs e)
-        {
-            textWrited = () => _wordsInputBox.TextLength > 0;
-
-            if (realtimeMode)
-            {
-                RealtimeModeInit();
-            }
-        }
-
-        private void _menuStripWorkModeComboBox_Click(object sender, EventArgs e)
-        {
-            if (_menuStripWorkModeComboBox.Text == "Realtime calculating")
-            {
-                realtimeMode = true;
-                RealtimeModeInit();
-            }
-        }
 
         private void _btnClearText_Click(object sender, EventArgs e)
         {
@@ -320,11 +302,6 @@
 
         private void _btnCalculate_Click(object sender, EventArgs e)
         {
-            if (realtimeMode)
-            {
-                return;
-            }
-
             _inputTextOutputInfoGroupBox.Enabled = true;
 
             CalculateValues();
@@ -334,20 +311,19 @@
 
         private void _wordsInputBox_TextChanged(object sender, EventArgs e)
         {
-            _btnClearText.Enabled = textWrited();
+            _btnClearText.Enabled = _textWrited();
 
-            if (realtimeMode)
+            if (_calculateMode() == CalculateMode.Realtime)
             {
-                _inputTextOutputInfoGroupBox.Enabled = _wordsInputBox.TextLength > 0;
+                _inputTextOutputInfoGroupBox.Enabled = _textWrited();
 
                 CalculateValues();
-
-                return;
             }
-
-            _btnCalculate.Enabled = textWrited();
-
-            _inputTextOutputInfoGroupBox.Enabled = false;
+            else
+            {
+                _inputTextOutputInfoGroupBox.Enabled = false;
+                _btnCalculate.Enabled = _textWrited();
+            }
         }
 
         private void _menuStripLoadFileBtn_Click(object sender, EventArgs e)
@@ -360,27 +336,29 @@
             _wordsInputBox.Text = ReadFile(_openFileDialog.OpenFile());
         }
 
-        private void realtimeModeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            realtimeMode = !realtimeMode;
-
-            if (realtimeMode)
-            {
-                CalculateValues();
-                RealtimeModeInit();
-            }
-        }
-
         private void CalculateValues()
         {
             _wordsCountValue.Text = _wordsInputBox.Text.Split(' ').Length.ToString();
             _simbolsCountValue.Text = _wordsInputBox.Text.Trim().Length.ToString();
         }
 
-        private void RealtimeModeInit()
+        private void ChangeCalculateMode()
         {
-            _btnCalculate.Enabled = false;
-            _inputTextOutputInfoGroupBox.Enabled = textWrited();
+            Action<CalculateMode> _changeMode = (mode) => Config.WorkMode.Value = mode;
+
+            if (_calculateMode() == CalculateMode.WriteAndCalculate)
+            {
+                _changeMode(CalculateMode.Realtime);
+                _btnCalculate.Enabled = false;
+
+                CalculateValues();
+            }
+            else
+            {
+                _changeMode(CalculateMode.WriteAndCalculate);
+            }
+
+            _inputTextOutputInfoGroupBox.Enabled = _textWrited();
         }
 
         private string ReadFile(Stream stream)
@@ -399,5 +377,10 @@
 
             return default;
         }
+
+
+        // TO DELETE
+        private void _menuStripWorkModeComboBox_Click(object sender, EventArgs e) { }
+        private void realtimeModeToolStripMenuItem_Click(object sender, EventArgs e) { ChangeCalculateMode(); }
     }
 }
