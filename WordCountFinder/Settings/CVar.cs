@@ -26,7 +26,6 @@ namespace WordCountFinder.Settings
             }
             set
             {
-                // мм, ↓ хуета
                 if (!_canChangeValue)
                     throw new Exception("Value is locked");
                                 
